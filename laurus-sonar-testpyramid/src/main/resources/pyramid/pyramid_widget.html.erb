@@ -1,0 +1,49 @@
+<%
+  functional_tests = Integer(measure('manual_tests').value)
+  if(measure('tests'))
+    unit_tests = Integer(measure('tests').value)
+  else
+    unit_tests = 0
+  end
+  if(measure('integration_tests'))
+    integration_tests = Integer(measure('integration_tests').value)
+  else
+    integration_tests = 0
+  end
+
+  max = [unit_tests, integration_tests, functional_tests].max
+
+  def calculate_width(value, max)
+    ((80 * value)/max).to_i.to_s + "%"
+  end
+
+  unit_tests_width = calculate_width(unit_tests, max)
+  integration_tests_width = calculate_width(integration_tests, max)
+  functional_tests_width = calculate_width(functional_tests, max)
+%>
+  <!--<h3>Test Pyramid</h3>-->
+
+<table width="100%">
+  <tbody>
+  <tr>
+  <td width="50%" valign="top">
+    <div class="dashbox">
+        <h3>Test Pyramid Score</h3>
+        <p>
+            <span class="big">
+                <%= format_measure('pyramid') %>
+	        </span>
+        </p>
+    </div>
+  </td>
+  <td width="50%" valign="top" nowrap>
+    <h4>Manual</h4>
+    <div style='width:<%= functional_tests_width %>;background-color:darkred;padding:10px;color:white' ><%= functional_tests %></div><%= tendency_icon(measure('sonar.testpyramid.functionaltests')) %>
+    Integration
+    <div style='width:<%= integration_tests_width %>;background-color:midnightblue;padding:10px;color:white' ><%= integration_tests %></div><%= tendency_icon(measure('sonar.testpyramid.integrationtests')) %>
+    Unit
+    <div style='width:<%= unit_tests_width %>;background-color:tomato;padding:10px;color:white' ><%= unit_tests %></div><%= tendency_icon(measure('sonar.testpyramid.unittests')) %>
+  </td>
+  </tr>
+  </tbody>
+</table>
