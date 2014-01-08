@@ -31,8 +31,8 @@ import org.sonar.api.web.*;
 public class TestPyramidWidget extends AbstractRubyTemplate implements RubyRailsWidget {
     @Override
     protected String getTemplatePath() {
-        //return "/pyramid/pyramid_widget.html.erb";
-        return "E:\\temp\\sonar-examples-master\\plugins\\sonar-reference-plugin\\laurus-sonar-testpyramid\\src\\main\\resources\\pyramid\\pyramid_widget.html.erb";
+        return "/pyramid/pyramid_widget.html.erb";
+        //return "E:\\temp\\sonar-examples-master\\plugins\\sonar-reference-plugin\\laurus-sonar-testpyramid\\src\\main\\resources\\pyramid\\pyramid_widget.html.erb";
     }
 
     @Override

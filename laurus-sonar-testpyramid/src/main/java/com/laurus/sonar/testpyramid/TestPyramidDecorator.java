@@ -1,10 +1,14 @@
 package com.laurus.sonar.testpyramid;
 
 import com.laurus.sonar.metrics.TestPyramidMetrics;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.Decorator;
 import org.sonar.api.batch.DecoratorContext;
 import org.sonar.api.config.Settings;
 import org.sonar.api.measures.CoreMetrics;
+import org.sonar.api.measures.MeasureUtils;
+import org.sonar.api.measures.Metric;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
 
@@ -18,36 +22,53 @@ public class TestPyramidDecorator implements Decorator {
       // only execute on the root project
       return project.isRoot();
   }
-
   public void decorate(Resource resource, DecoratorContext context) {
-      int unitTests = 0;
-      int integrationTests = 0;
-      int manualTests = 0;
-      if(context.getMeasure(CoreMetrics.TESTS) != null) {
-        unitTests = context.getMeasure(CoreMetrics.TESTS).getIntValue();
-      }
+      //double unitTests = 0.0d;
+      double integrationTests = 0.0d;
+      double manualTests = 0.0d;
+      context.getChildrenMeasures(CoreMetrics.TESTS);
+      /*if(context.getMeasure(CoreMetrics.TESTS) != null) {
+        unitTests = context.getMeasure(CoreMetrics.TESTS).getValue();
+      }*/
+      double unitTests = MeasureUtils.sum(true, context.getChildrenMeasures(CoreMetrics.TESTS));
       if(context.getMeasure(TestPyramidMetrics.INTEGRATION_TESTS) != null) {
-        integrationTests = context.getMeasure(TestPyramidMetrics.INTEGRATION_TESTS).getIntValue();
+        integrationTests = context.getMeasure(TestPyramidMetrics.INTEGRATION_TESTS).getValue();
       }
+      double x = MeasureUtils.sum(true, context.getChildrenMeasures(s)) + MeasureUtils.sum(true, context.getChildrenMeasures(c));
+      integrationTests = x;
       if(context.getMeasure(TestPyramidMetrics.MANUAL_TESTS) != null) {
-        manualTests = context.getMeasure(TestPyramidMetrics.MANUAL_TESTS).getIntValue();
+        manualTests = context.getMeasure(TestPyramidMetrics.MANUAL_TESTS).getValue();
       }
 
-      double total = unitTests + integrationTests + manualTests;
-      double pUnit = unitTests / total;
-      double pIntegration = integrationTests / total;
-      double pManual = manualTests / total;
+      double total = (double)(unitTests + integrationTests + manualTests);
+
+      logger.debug("total tests: " + total);
+      logger.debug("unit tests: " + unitTests);
+      logger.debug("manual tests: " + manualTests);
+      double pUnit = 0.0d;
+      double pIntegration = 0.0d;
+      double pManual = 0.0d;
+      if(total > 0) {
+          pUnit = 100.0d * (unitTests / total);
+          pIntegration = 100.0d * (integrationTests / total);
+          pManual = 100.0d * (manualTests / total);
+      }
       // TODO: allow site-wide configuration of test pyramid ideals
-      double score = 100.0d * ((pUnit / 70.0d) + (pIntegration / 20.0d) + (pManual / 10.0d));
+      logger.debug("unit score: " + (pUnit / 70.0d));
+      logger.debug("integration score: " + (pIntegration / 20.0d));
+      logger.debug("manual score: " + (pManual / 10.0d));
+      //double score = 100.0d * ((pUnit / 70.0d) + (pIntegration / 20.0d) + (pManual / 10.0d));
+      double score = 100 - ( Math.abs(100 - ( 1 / ((pUnit / 70.0d) + (pIntegration / 20.0d) + (pManual / 10.0d)) * 300)));
       context.saveMeasure(TestPyramidMetrics.PYRAMID_SCORE, score);
     }
 
+    private Metric s = new Metric.Builder("service_test_count", "service_test_count", Metric.ValueType.INT).create();
+    private Metric c = new Metric.Builder("controller_test_count", "controller_test_count", Metric.ValueType.INT).create();
 
-  @Override
   public String toString() {
     return getClass().getSimpleName();
   }
 
     private Settings settings;
-
+    private Logger logger = LoggerFactory.getLogger(getClass());
 }

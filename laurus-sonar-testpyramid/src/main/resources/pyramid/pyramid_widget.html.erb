@@ -1,14 +1,27 @@
 <%
-  functional_tests = Integer(measure('manual_tests').value)
+  if(measure('manual_tests'))
+    functional_tests = Integer(measure('manual_tests').value)
+  else
+    functional_tests = 0
+  end
+
   if(measure('tests'))
     unit_tests = Integer(measure('tests').value)
   else
     unit_tests = 0
   end
-  if(measure('integration_tests'))
-    integration_tests = Integer(measure('integration_tests').value)
+  #if(measure('integration_tests'))
+  #  integration_tests = Integer(measure('integration_tests').value)
+  #else
+  #  integration_tests = 0
+  #end
+  if(measure('service_test_count'))
+    integration_tests = Integer(measure('service_test_count').value)
   else
     integration_tests = 0
+  end
+  if(measure('controller_test_count'))
+    integration_tests = integration_tests + Integer(measure('controller_test_count').value)
   end
 
   max = [unit_tests, integration_tests, functional_tests].max
