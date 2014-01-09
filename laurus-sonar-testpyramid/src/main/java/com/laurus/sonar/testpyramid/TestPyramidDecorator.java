@@ -57,8 +57,12 @@ public class TestPyramidDecorator implements Decorator {
       logger.debug("unit score: " + (pUnit / 70.0d));
       logger.debug("integration score: " + (pIntegration / 20.0d));
       logger.debug("manual score: " + (pManual / 10.0d));
-      //double score = 100.0d * ((pUnit / 70.0d) + (pIntegration / 20.0d) + (pManual / 10.0d));
-      double score = 100 - ( Math.abs(100 - ( 1 / ((pUnit / 70.0d) + (pIntegration / 20.0d) + (pManual / 10.0d)) * 300)));
+      //double score = 100.0d * ((pUnit / 70.0d) + (pIntegration / 20.0d+ (pManual / 10.0d));
+      double denominator = ((pUnit / 70.0d) + (pIntegration / 20.0d) + (pManual / 10.0d)) ;
+      double score = 0.0d;
+      if(denominator != 0) {
+          score = 100 - ( Math.abs(100 - ( 1 / denominator * 300)));
+      }
       context.saveMeasure(TestPyramidMetrics.PYRAMID_SCORE, score);
     }
 
