@@ -47,7 +47,7 @@ public class ManualTestSensor implements Sensor {
         TestQueryStreamConsumer queryResults = new TestQueryStreamConsumer(regex);
         ErrorStreamConsumer errorConsumer = new ErrorStreamConsumer();
         logger.info("Executing command: " + c.toCommandLine());
-        CommandExecutor.create().execute(c, queryResults, errorConsumer, 9999);
+        CommandExecutor.create().execute(c, queryResults, errorConsumer, 300000);
         int manualTestCount = queryResults.getTestCount();
         logger.info("Got " + manualTestCount + " tests from query");
 
