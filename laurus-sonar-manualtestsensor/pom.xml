@@ -4,13 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>laurus-sonar</artifactId>
-        <groupId>org.codehaus.sonar.examples</groupId>
+        <groupId>com.laurus.sonar</groupId>
         <version>0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>laurus-sonar-manualtestsensor</artifactId>
-    <groupId>org.codehaus.sonar.examples</groupId>
+    <groupId>com.laurus.sonar</groupId>
     <packaging>sonar-plugin</packaging>
     <version>0.1-SNAPSHOT</version>
 
@@ -24,7 +24,7 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.codehaus.sonar.examples</groupId>
+            <groupId>com.laurus.sonar</groupId>
             <artifactId>laurus-sonar-metrics</artifactId>
             <version>0.1-SNAPSHOT</version>
         </dependency>
