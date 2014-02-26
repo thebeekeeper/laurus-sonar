@@ -14,7 +14,7 @@ package com.laurus.sonar.testpyramid;
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */
+*/
 
 import com.laurus.sonar.metrics.TestPyramidMetrics;
 import org.slf4j.Logger;
@@ -39,13 +39,9 @@ public class TestPyramidDecorator implements Decorator {
       return project.isRoot();
   }
   public void decorate(Resource resource, DecoratorContext context) {
-      //double unitTests = 0.0d;
-      double integrationTests = 0.0d;
-      double manualTests = 0.0d;
-      context.getChildrenMeasures(CoreMetrics.TESTS);
-      /*if(context.getMeasure(CoreMetrics.TESTS) != null) {
-        unitTests = context.getMeasure(CoreMetrics.TESTS).getValue();
-      }*/
+      double integrationTests = 0;
+      double manualTests = 0;
+      //context.getChildrenMeasures(CoreMetrics.TESTS);
       double unitTests = MeasureUtils.sum(true, context.getChildrenMeasures(CoreMetrics.TESTS));
       if(context.getMeasure(TestPyramidMetrics.INTEGRATION_TESTS) != null) {
         integrationTests = context.getMeasure(TestPyramidMetrics.INTEGRATION_TESTS).getValue();
@@ -56,29 +52,9 @@ public class TestPyramidDecorator implements Decorator {
         manualTests = context.getMeasure(TestPyramidMetrics.MANUAL_TESTS).getValue();
       }
 
-      double total = (double)(unitTests + integrationTests + manualTests);
+      TestPyramidScoreCalculator scoreCalculator = new TestPyramidScoreCalculator();
+      double score = scoreCalculator.calculateScore(unitTests, integrationTests, manualTests);
 
-      logger.debug("total tests: " + total);
-      logger.debug("unit tests: " + unitTests);
-      logger.debug("manual tests: " + manualTests);
-      double pUnit = 0.0d;
-      double pIntegration = 0.0d;
-      double pManual = 0.0d;
-      if(total > 0) {
-          pUnit = 100.0d * (unitTests / total);
-          pIntegration = 100.0d * (integrationTests / total);
-          pManual = 100.0d * (manualTests / total);
-      }
-      // TODO: allow site-wide configuration of test pyramid ideals
-      logger.debug("unit score: " + (pUnit / 70.0d));
-      logger.debug("integration score: " + (pIntegration / 20.0d));
-      logger.debug("manual score: " + (pManual / 10.0d));
-      //double score = 100.0d * ((pUnit / 70.0d) + (pIntegration / 20.0d+ (pManual / 10.0d));
-      double denominator = ((pUnit / 70.0d) + (pIntegration / 20.0d) + (pManual / 10.0d)) ;
-      double score = 0.0d;
-      if(denominator != 0) {
-          score = 100 - ( Math.abs(100 - ( 1 / denominator * 300)));
-      }
       context.saveMeasure(TestPyramidMetrics.PYRAMID_SCORE, score);
     }
 
