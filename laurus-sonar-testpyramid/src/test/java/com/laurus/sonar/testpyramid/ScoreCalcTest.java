@@ -28,7 +28,7 @@ import static org.junit.Assert.assertEquals;
  */
 
 @RunWith(JUnit4.class)
-public class ScoreCalcTests {
+public class ScoreCalcTest {
     @Test
     public void onlyUnitTests() {
         TestPyramidScoreCalculator calc = new TestPyramidScoreCalculator();
